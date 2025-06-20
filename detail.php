@@ -14,9 +14,9 @@ try {
 }catch(PDOException $e){
     die('Error! '. $e->getMessage());
 }
-$id=$_GET['id'];
-$query = $db->prepare("SELECT * FROM film WHERE id=". $id);
-
+$id = $_GET['id'];
+$query = $db->prepare("SELECT * FROM film WHERE id= :id");
+$query->bindParam(":id",  $id);
 $query->execute();
 $result = $query->fetchAll(PDO::FETCH_ASSOC);
 foreach($result as $data) {
@@ -31,15 +31,23 @@ try {
     die('Error! '. $e->getMessage());
 }
 $id=$_GET['id'];
-$query = $db->prepare("SELECT * FROM beoordeling WHERE id=". $id);
+$query = $db->prepare("SELECT * FROM beoordeling WHERE film_id = :id");
 
+$query->bindParam(":id",  $id);
 $query->execute();
+$count = 0;
+$som = 0;
 $result = $query->fetchAll(PDO::FETCH_ASSOC);
 foreach($result as $data) {
     echo '<p>Cijfer: ' . $data["cijfer"] . '</p>';
     echo '<p>Opmerking: ' . $data["opmerking"] .  '</p>';
-
+    $nieuw = $data["cijfer"];
+    $som += $nieuw;
+    $count++;
 }
+echo '<h3>Gemiddelde:</h3>' . $som / $count;
 ?>
+
+
 </body>
 </html>
